@@ -223,4 +223,55 @@ body {
     .modal-content {
         width: 90%;
     }
+    
+}
+#junctionMap {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+#junctionMap iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.junction-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.video-feed {
+    position: absolute;
+    width: 200px;
+    height: 150px;
+    background-color: rgba(0,0,0,0.8);
+    border: 2px solid white;
+    color: white;
+    text-align: center;
+    line-height: 150px;
+    z-index: 1001;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #junctionMap {
+        height: 300px;
+    }
+
+    .video-feed {
+        width: 150px;
+        height: 100px;
+        line-height: 100px;
+    }
 }
