@@ -3,341 +3,867 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Page Traffic Monitoring System</title>
+    <title>Track-V Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #1e1e1e;
-            --panel-bg: #2a2a2a;
-            --text-color: #e0e0e0;
-            --accent-color: #3498db;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
+            --bg-color: #1a202c;
+            --text-color: #e2e8f0;
+            --sidebar-bg: #2d3748;
+            --card-bg: #4a5568;
+            --accent-color: #4299e1;
+            --success-color: #48bb78;
+            --warning-color: #ecc94b;
+            --danger-color: #f56565;
         }
-        
-        body, html {
+        body {
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            height: 100%;
-            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
-        
-        .app-container {
+        .container {
             display: flex;
             height: 100vh;
         }
-        
         .sidebar {
-            width: 200px;
-            background-color: var(--panel-bg);
+            width: 250px;
+            background-color: var(--sidebar-bg);
             padding: 20px;
-            border-right: 1px solid var(--accent-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
-        
-        .logo {
-            font-weight: bold;
-            font-size: 24px;
-            color: var(--accent-color);
-            margin-bottom: 30px;
-        }
-        
-        .nav-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: var(--accent-color);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            text-align: left;
-        }
-        
-        .nav-button:hover {
-            background-color: #2980b9;
-        }
-        
-        .nav-button.active {
-            background-color: #2c3e50;
-        }
-        
         .main-content {
             flex-grow: 1;
             padding: 20px;
             overflow-y: auto;
         }
-        
-        .page {
-            display: none;
+        .nav-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
         }
-        
-        .page.active {
-            display: block;
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--accent-color);
         }
-        
-        /* Dashboard specific styles */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
-        
-        .video-feed {
-            background-color: var(--panel-bg);
-            border: 1px solid #444;
-            border-radius: 5px;
+        .video-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
-        
-        .video-content {
-            aspect-ratio: 16 / 9;
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+        .video-placeholder {
             background-color: #000;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--text-color);
+        }
+        .video-info {
+            padding: 15px;
+        }
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .weather-widget {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .map-container {
+            height: 400px;
+            background-color: #ccc;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
             position: relative;
         }
-        
-        .video-overlay {
+        .alert-button {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .alert-button:hover {
+            background-color: #e53e3e;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
             position: absolute;
+            cursor: pointer;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            font-size: 18px;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
         }
-        
-        .prediction-lines {
+        .slider:before {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            display: flex;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
         }
-        
-        .prediction-line {
-            flex: 1;
-            height: 100%;
-        }
-        
-        .prediction-line.past { background-color: var(--warning-color); }
-        .prediction-line.current { background-color: var(--success-color); }
-        .prediction-line.future { background-color: var(--danger-color); }
-        
-        /* Reports specific styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        th, td {
-            border: 1px solid #444;
-            padding: 10px;
-            text-align: left;
-        }
-        
-        th {
-            background-color: var(--panel-bg);
-        }
-        
-        /* Settings specific styles */
-        form {
-            display: grid;
-            gap: 10px;
-            max-width: 400px;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 5px;
-            background-color: var(--panel-bg);
-            border: 1px solid #444;
-            color: var(--text-color);
-        }
-        
-        button {
-            padding: 10px;
+        input:checked + .slider {
             background-color: var(--accent-color);
-            border: none;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .profile-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+        .profile-info {
+            flex-grow: 1;
+        }
+        .profile-info h2 {
+            margin-top: 0;
+        }
+        .inspector-entry {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .logout-button {
+            background-color: var(--danger-color);
             color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: auto;
+            transition: background-color 0.2s;
+        }
+        .logout-button:hover {
+            background-color: #e53e3e;
+        }
+        .weather-icon {
+            font-size: 48px;
+            margin-right: 20px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 50%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
             cursor: pointer;
         }
-        
-        button:hover {
-            background-color: #2980b9;
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .map-marker {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+        }
+        .floating-video {
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            background-color: #000;
+            border: 2px solid white;
+            border-radius: 8px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <nav class="sidebar">
-            <div class="logo">SurTrac</div>
-            <button class="nav-button active" data-page="dashboardPage">Dashboard</button>
-            <button class="nav-button" data-page="reportsPage">Reports</button>
-            <button class="nav-button" data-page="settingsPage">Settings</button>
-            <button class="nav-button" data-page="helpPage">Help</button>
-        </nav>
-        
-        <main class="main-content">
-            <div id="dashboardPage" class="page active">
-                <h2>Traffic Dashboard</h2>
-                <div class="video-grid">
-                    <div class="video-feed">
-                        <div class="video-content">
-                            <div class="video-overlay">Video Feed 1</div>
-                            <video src="/vehical.mp4" height="300px"></video>
-                            <div class="prediction-lines">
-                                <div class="prediction-line past" style="flex-grow: 2;"></div>
-                                <div class="prediction-line current" style="flex-grow: 1;"></div>
-                                <div class="prediction-line future" style="flex-grow: 3;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-feed">
-                        <div class="video-content">
-                            <div class="video-overlay">Video Feed 2</div>
-                            <div class="prediction-lines">
-                                <div class="prediction-line past" style="flex-grow: 1;"></div>
-                                <div class="prediction-line current" style="flex-grow: 3;"></div>
-                                <div class="prediction-line future" style="flex-grow: 2;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-feed">
-                        <div class="video-content">
-                            <div class="video-overlay">Video Feed 3</div>
-                            <div class="prediction-lines">
-                                <div class="prediction-line past" style="flex-grow: 3;"></div>
-                                <div class="prediction-line current" style="flex-grow: 2;"></div>
-                                <div class="prediction-line future" style="flex-grow: 1;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-feed">
-                        <div class="video-content">
-                            <div class="video-overlay">Video Feed 4</div>
-                            <div class="prediction-lines">
-                                <div class="prediction-line past" style="flex-grow: 1;"></div>
-                                <div class="prediction-line current" style="flex-grow: 1;"></div>
-                                <div class="prediction-line future" style="flex-grow: 4;"></div>
-                            </div>
-                        </div>
+    <div class="container">
+        <div class="sidebar">
+            <h2 style="color: var(--accent-color); margin-bottom: 20px;">Track-V</h2>
+            <div class="nav-item active" data-page="dashboard">📊 Dashboard</div>
+            <div class="nav-item" data-page="reports">📈 Reports</div>
+            <div class="nav-item" data-page="settings">⚙️ Settings</div>
+            <div class="nav-item" data-page="help">❓ Help</div>
+            <div class="nav-item" data-page="profile">👤 Profile</div>
+            <div class="nav-item" data-page="weather">🌤️ Weather</div>
+            <div class="nav-item" data-page="inspectors">👮 Inspectors</div>
+            <div class="nav-item" data-page="map">🗺️ Map View</div>
+            <div class="weather-widget">
+                <h3>Current Weather</h3>
+                <div style="display: flex; align-items: center;">
+                    <div id="weatherIcon" class="weather-icon">🌤️</div>
+                    <div>
+                        <p>Temperature: <span id="temperature">--</span>°C</p>
+                        <p>Condition: <span id="condition">--</span></p>
                     </div>
                 </div>
             </div>
-            
-            <div id="reportsPage" class="page">
-                <h2>Traffic Reports</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Peak Traffic Time</th>
-                            <th>Average Wait Time</th>
-                            <th>Incidents</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2024-10-01</td>
-                            <td>08:30 AM</td>
-                            <td>2.5 min</td>
-                            <td>None</td>
-                        </tr>
-                        <tr>
-                            <td>2024-10-02</td>
-                            <td>05:15 PM</td>
-                            <td>3.2 min</td>
-                            <td>1 Minor</td>
-                        </tr>
-                        <!-- Add more rows as needed -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div id="settingsPage" class="page">
-                <h2>System Settings</h2>
-                <form id="settingsForm">
-                    <label for="updateInterval">Update Interval (seconds):</label>
-                    <input type="number" id="updateInterval" name="updateInterval" min="1" max="60" value="5">
-                    
-                    <label for="alertThreshold">Alert Threshold (minutes):</label>
-                    <input type="number" id="alertThreshold" name="alertThreshold" min="1" max="30" value="10">
-                    
-                    <label for="dataRetention">Data Retention (days):</label>
-                    <input type="number" id="dataRetention" name="dataRetention" min="1" max="365" value="30">
-                    
-                    <button type="submit">Save Settings</button>
-                </form>
-            </div>
-            
-            <div id="helpPage" class="page">
-                <h2>Help & Support</h2>
-                <h3>Frequently Asked Questions</h3>
-                <ul>
-                    <li>
-                        <strong>Q: How do I interpret the prediction lines?</strong><br>
-                        A: The prediction lines show past (yellow), current (green), and future (red) traffic levels. Longer lines indicate higher traffic volumes.
-                    </li>
-                    <li>
-                        <strong>Q: What do the colors in the status panel mean?</strong><br>
-                        A: Green indicates normal or optimal conditions, yellow indicates caution or minor issues, and red indicates critical issues or high traffic levels.
-                    </li>
-                    <li>
-                        <strong>Q: How often is the data updated?</strong><br>
-                        A: By default, data is updated every 5 seconds. You can adjust this in the Settings page.
-                    </li>
-                </ul>
-                <p>For further assistance, please contact our support team at support@surtrac.com</p>
-            </div>
-        </main>
+            <button class="logout-button">🚪 Logout</button>
+        </div>
+        <div class="main-content" id="mainContent">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <div id="addInspectorModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Inspector</h2>
+            <form id="addInspectorForm">
+                <input type="hidden" id="junctionId" name="junctionId">
+                <label for="inspectorName">Name:</label>
+                <input type="text" id="inspectorName" name="inspectorName" required><br><br>
+                <label for="inspectorPhone">Phone:</label>
+                <input type="tel" id="inspectorPhone" name="inspectorPhone" required><br><br>
+                <label for="inspectorEmail">Email:</label>
+                <input type="email" id="inspectorEmail" name="inspectorEmail" required><br><br>
+                <button type="submit">Add Inspector</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Navigation functionality
-        const navButtons = document.querySelectorAll('.nav-button');
-        const pages = document.querySelectorAll('.page');
+        const mainContent = document.getElementById('mainContent');
+        const navItems = document.querySelectorAll('.nav-item');
+        let isDarkMode = true;
 
-        navButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const pageId = button.getAttribute('data-page');
-                
-                // Hide all pages and deactivate all buttons
-                pages.forEach(page => page.classList.remove('active'));
-                navButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Show selected page and activate button
-                document.getElementById(pageId).classList.add('active');
-                button.classList.add('active');
+        const pages = {
+            dashboard: `
+                <h1>Traffic Dashboard</h1>
+                <div class="system-switch" style="margin-bottom: 20px;">
+                    <label class="switch">
+                        <input type="checkbox" id="systemSwitch" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span id="systemStatus">System: Online</span>
+                </div>
+                <div class="video-grid">
+                    ${[1, 2, 3, 4].map(i => `
+                        <div class="video-card">
+                            <div class="video-placeholder">Video Feed ${i}</div>
+                            <div class="video-info">
+                                <h3>Junction ${i}</h3>
+                                <p>Traffic Density: <span id="density${i}">--</span></p>
+                                <p>Congestion Level: <span id="congestion${i}">--</span></p>
+                                <button class="alert-button" onclick="sendAlert(${i})">Send Alert</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+            reports: `
+                <h1>Reports</h1>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    ${[1, 2, 3, 4].map(i => `
+                        <div class="chart-container">
+                            <h2 style="color: var(--text-color);">Junction ${i} Report</h2>
+                            <canvas id="predictionChart${i}"></canvas>
+                            <canvas id="densityChart${i}"></canvas>
+                            <canvas id="congestionChart${i}"></canvas>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+            settings: `
+                <h1>Settings</h1>
+                <div class="chart-container">
+                    <h2>Theme</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="themeSwitch" ${isDarkMode ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                    <span id="themeStatus">Dark Mode</span>
+                </div>
+                <div class="chart-container">
+                    <h2>Notification Settings</h2>
+                    <label>
+                        <input type="checkbox" id="emailNotifications" checked>
+                        Email Notifications
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="smsNotifications" checked>
+                        SMS Notifications
+                    </label>
+                </div>
+                <div class="chart-container">
+                    <h2>Data Refresh Rate</h2>
+                    <select id="refreshRate">
+                        <option value="5000">5 seconds</option>
+                        <option value="10000" selected>10 seconds</option>
+                        <option value="30000">30 seconds</option>
+                        <option value="60000">1 minute</option>
+                    </select>
+                </div>
+            `,
+            help: `
+                <h1>Help Center</h1>
+                <div class="chart-container">
+                    <h2>Frequently Asked Questions</h2>
+                    <ul>
+                        <li>How do I interpret the traffic density data?</li>
+                        <li>What do the different congestion levels mean?</li>
+                        <li>How can I customize my dashboard view?</li>
+                        <li>What should I do if I notice a technical issue?</li>
+                    </ul>
+                </div>
+                <div class="chart-container">
+                    <h2>Contact Support</h2>
+                    <p>For assistance, please contact the IT department:</p>
+                    <p>Email: it-support@police.gov.in</p>
+                    <p>Phone: 1800-123-4567</p>
+                    <p>Available 24/7</p>
+                </div>
+            `,
+            profile: `
+                <h1>Officer Profile</h1>
+                <div class="profile-card">
+                    <img src="https://placekitten.com/200/200" alt="Officer Rajesh Kumar" class="profile-picture">
+                    <div class="profile-info">
+                        <h2>Rajesh Kumar</h2>
+                        <p><strong>Badge Number:</strong> IPS-2345</p>
+                        <p><strong>Rank:</strong> Sub-Inspector</p>
+                        <p><strong>Station:</strong> Central Police Station, Mumbai</p>
+                        <p><strong>Years of Service:</strong> 8</p>
+                        <p><strong>Specialization:</strong> Traffic Management</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h2>Performance Metrics</h2>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h2>Recent Activities</h2>
+                    <ul>
+                        <li>Completed advanced traffic management course - 15/09/2023</li>
+                        <li>Received commendation for managing Diwali traffic - 12/11/2023</li>
+                        <li>Implemented new traffic signal optimization system - 03/01/2024</li>
+                    </ul>
+                </div>
+            `,
+            weather: `
+                <h1>Weather Information</h1>
+                <div class="weather-widget" style="display: flex; align-items: center;">
+                    <div id="mainWeatherIcon" class="weather-icon">🌤️</div>
+                    <div>
+                        <h2>Current Weather</h2>
+                        <p>Temperature: <span id="mainTemperature">--</span>°C</p>
+                        <p>Condition: <span id="mainCondition">--</span></p>
+                        <p>Humidity: <span id="humidity">--</span>%</p>
+                        <p>Wind Speed: <span id="windSpeed">--</span> km/h</p>
+                    </div>
+                </div>
+                <div class="map-container" id="weatherMap">
+                    <!-- Weather map will be inserted here -->
+                </div>
+                <div class="chart-container">
+                    <h2>Weather Impact on Traffic</h2>
+                    <p>Current weather conditions may affect traffic flow. Please adjust traffic management strategies accordingly.</p>
+                    <canvas id="weatherImpactChart"></canvas>
+                </div>
+            `,
+            inspectors: `
+                <h1>Traffic Inspectors</h1>
+                ${[1, 2, 3, 4].map(i => `
+                    <div class="inspector-entry">
+                        <h2>Junction ${i}</h2>
+                        <p>Current Inspectors: <span id="currentInspectors${i}">3</span></p>
+                        <p>New Assignments: <span id="newAssignments${i}">1</span></p>
+                        <button onclick="openAddInspectorModal(${i})">Add Inspector</button>
+                        <button onclick="removeInspector(${i})">Remove Inspector</button>
+                        <div id="inspectorList${i}"></div>
+                    </div>
+                `).join('')}
+            `,
+            map: `
+                <h1>Map View</h1>
+                <div class="map-container" id="junctionMap">
+                    <!-- Temporary map with junction markers -->
+                    ${[1, 2, 3, 4].map(i => `
+                        <div class="map-marker" style="left: ${20 + i * 20}%; top: ${20 + i * 15}%" onclick="showJunctionVideo(${i})"></div>
+                        <div id="videoFeed${i}" class="floating-video">Video Feed ${i}</div>
+                    `).join('')}
+                </div>
+            `
+        };
+
+        function setActivePage(pageId) {
+            navItems.forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+            mainContent.innerHTML = pages[pageId];
+
+            if (pageId === 'dashboard') {
+                initializeDashboard();
+            } else if (pageId === 'reports') {
+                initializeReports();
+            } else if (pageId === 'weather') {
+                updateWeatherInfo();
+                createWeatherImpactChart();
+            } else if (pageId === 'profile') {
+                createPerformanceChart();
+            } else if (pageId === 'inspectors') {
+                updateInspectorLists();
+            }
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.getAttribute('data-page');
+                setActivePage(pageId);
             });
         });
 
-        // Simulating real-time updates for the dashboard
-        function updatePredictionLines() {
-            const lines = document.querySelectorAll('.prediction-line');
-            lines.forEach(line => {
-                const randomGrowth = Math.floor(Math.random() * 5) + 1;
-                line.style.flexGrow = randomGrowth;
+        function initializeDashboard() {
+            const systemSwitch = document.getElementById('systemSwitch');
+            const systemStatus = document.getElementById('systemStatus');
+
+            systemSwitch.addEventListener('change', function() {
+                systemStatus.textContent = this.checked ? 'System: Online' : 'System: Manual';
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`density${i}`).textContent = Math.floor(Math.random() * 100) + '%';
+                    document.getElementById(`congestion${i}`).textContent = ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)];
+                }
+            }, 5000);
+        }
+
+        function initializeReports() {
+            for (let i = 1; i <= 4; i++) {
+                createPredictionChart(i);
+                createDensityChart(i);
+                createCongestionChart(i);
+            }
+        }
+
+        function createPredictionChart(feedId) {
+            const ctx = document.getElementById(`predictionChart${feedId}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lane 1', 'Lane 2', 'Lane 3', 'Lane 4'],
+                    datasets: [{
+                        label: 'Predicted Count',
+                        data: [65, 59, 80, 81],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    }, {
+                        label: 'Actual Count',
+                        data: [70, 62, 75, 85],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: `Prediction vs Actual Count - Junction ${feedId}`
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
             });
         }
 
-        // Update every 5 seconds
-        setInterval(updatePredictionLines, 5000);
+        function createDensityChart(feedId) {
+            const ctx = document.getElementById(`densityChart${feedId}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                    datasets: [{
+                        label: 'Traffic Density',
+                        data: [30, 20, 40, 80, 65, 75, 90, 50],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: `Traffic Density Over Time - Junction ${feedId}`
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
-        // Settings form submission
-        const settingsForm = document.getElementById('settingsForm');
-        settingsForm.addEventListener('submit', (e) => {
+        function createCongestionChart(feedId) {
+            const ctx = document.getElementById(`congestionChart${feedId}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    datasets: [{
+                        label: 'Congestion Level',
+                        data: [65, 59, 80, 81, 56],
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: `Weekly Congestion Levels - Junction ${feedId}`
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function sendAlert(feedId) {
+            alert(`Alert sent for Junction ${feedId}. SMS notification dispatched to nearest junction.`);
+        }
+
+        function updateWeatherInfo() {
+            // Simulate weather data (replace with actual API call in production)
+            const temperature = Math.floor(Math.random() * 15) + 20; // 20-35°C
+            const conditions = ['Sunny', 'Cloudy', 'Rainy', 'Stormy'];
+            const condition = conditions[Math.floor(Math.random() * conditions.length)];
+            const humidity = Math.floor(Math.random() * 30) + 40; // 40-70%
+            const windSpeed = Math.floor(Math.random() * 20) + 5; // 5-25 km/h
+
+            document.getElementById('temperature').textContent = temperature;
+            document.getElementById('condition').textContent = condition;
+            document.getElementById('mainTemperature').textContent = temperature;
+            document.getElementById('mainCondition').textContent = condition;
+            document.getElementById('humidity').textContent = humidity;
+            document.getElementById('windSpeed').textContent = windSpeed;
+
+            // Update weather icons
+            const weatherIcon = document.getElementById('weatherIcon');
+            const mainWeatherIcon = document.getElementById('mainWeatherIcon');
+            switch(condition) {
+                case 'Sunny':
+                    weatherIcon.textContent = '☀️';
+                    mainWeatherIcon.textContent = '☀️';
+                    break;
+                case 'Cloudy':
+                    weatherIcon.textContent = '☁️';
+                    mainWeatherIcon.textContent = '☁️';
+                    break;
+                case 'Rainy':
+                    weatherIcon.textContent = '🌧️';
+                    mainWeatherIcon.textContent = '🌧️';
+                    break;
+                case 'Stormy':
+                    weatherIcon.textContent = '⛈️';
+                    mainWeatherIcon.textContent = '⛈️';
+                    break;
+            }
+
+            // Simulate weather map (replace with actual map integration in production)
+            document.getElementById('weatherMap').innerHTML = `
+                <div style="background-color: #87CEEB; color: black; padding: 20px; text-align: center;">
+                    Weather Map Placeholder<br>
+                    Current condition: ${condition}
+                </div>
+            `;
+        }
+
+        function createWeatherImpactChart() {
+            const ctx = document.getElementById('weatherImpactChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                    datasets: [{
+                        label: 'Traffic Flow',
+                        data: [70, 62, 75, 85, 80, 70, 65, 72],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Weather Impact on Traffic Flow'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Traffic Management', 'Public Relations', 'Report Writing', 'Emergency Response', 'Team Leadership'],
+                    datasets: [{
+                        label: 'Officer Performance',
+                        data: [85, 75, 90, 80, 70],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Officer Performance Metrics'
+                    },
+                    scale: {
+                        ticks: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.style.setProperty('--bg-color', isDarkMode ? '#1a202c' : '#ffffff');
+            document.body.style.setProperty('--text-color', isDarkMode ? '#e2e8f0' : '#2d3748');
+            document.body.style.setProperty('--sidebar-bg', isDarkMode ? '#2d3748' : '#f7fafc');
+            document.body.style.setProperty('--card-bg', isDarkMode ? '#4a5568' : '#edf2f7');
+            document.getElementById('themeStatus').textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
+        }
+
+        function openAddInspectorModal(junctionId) {
+            const modal = document.getElementById('addInspectorModal');
+            document.getElementById('junctionId').value = junctionId;
+            modal.style.display = 'block';
+        }
+
+        function closeAddInspectorModal() {
+            const modal = document.getElementById('addInspectorModal');
+            modal.style.display = 'none';
+        }
+
+        document.querySelector('.close').onclick = closeAddInspectorModal;
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('addInspectorModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('addInspectorForm').onsubmit = function(e) {
             e.preventDefault();
-            alert('Settings saved successfully!');
+            const junctionId = document.getElementById('junctionId').value;
+            const name = document.getElementById('inspectorName').value;
+            const phone = document.getElementById('inspectorPhone').value;
+            const email = document.getElementById('inspectorEmail').value;
+
+            // Add inspector to the list (in a real app, this would involve a backend call)
+            const inspectorList = document.getElementById(`inspectorList${junctionId}`);
+            const newInspector = document.createElement('div');
+            newInspector.innerHTML = `
+                <p><strong>${name}</strong></p>
+                <p>Phone: ${phone}</p>
+                <p>Email: ${email}</p>
+            `;
+            inspectorList.appendChild(newInspector);
+
+            // Update the count
+            const currentInspectorsElement = document.getElementById(`currentInspectors${junctionId}`);
+            const currentCount = parseInt(currentInspectorsElement.textContent);
+            currentInspectorsElement.textContent = currentCount + 1;
+
+            closeAddInspectorModal();
+        }
+
+        function removeInspector(junctionId) {
+            const inspectorList = document.getElementById(`inspectorList${junctionId}`);
+            if (inspectorList.lastChild) {
+                inspectorList.removeChild(inspectorList.lastChild);
+
+                // Update the count
+                const currentInspectorsElement = document.getElementById(`currentInspectors${junctionId}`);
+                const currentCount = parseInt(currentInspectorsElement.textContent);
+                currentInspectorsElement.textContent = Math.max(0, currentCount - 1);
+            }
+        }
+
+        function updateInspectorLists() {
+            // Simulate initial inspector data
+            for (let i = 1; i <= 4; i++) {
+                const inspectorList = document.getElementById(`inspectorList${i}`);
+                inspectorList.innerHTML = `
+                    <div>
+                        <p><strong>Inspector ${i}</strong></p>
+                        <p>Phone: 123-456-789${i}</p>
+                        <p>Email: inspector${i}@police.gov.in</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showJunctionVideo(junctionId) {
+            const videoFeed = document.getElementById(`videoFeed${junctionId}`);
+            videoFeed.style.display = videoFeed.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Initialize the dashboard
+        setActivePage('dashboard');
+
+        // Theme switch event listener
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'themeSwitch') {
+                toggleTheme();
+            }
         });
+
+        // Simulate periodic weather updates
+        setInterval(updateWeatherInfo, 300000); // Update every 5 minutes
     </script>
 </body>
 </html>
