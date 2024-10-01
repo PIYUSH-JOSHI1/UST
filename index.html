@@ -77,7 +77,7 @@ body {
     <label for="email">Email Address</label>
     <div class="sec-2">
       <ion-icon name="mail-outline"></ion-icon>
-      <input type="email" name="email" id="email" placeholder=""/>
+      <input type="email" name="email" id="email" placeholder="Enter your email"/>
     </div>
   </div>
   <div class="password">
@@ -129,7 +129,7 @@ body {
     
     const user = userCredential.user;
       alert('Login successful');
-      window.location.href = "/afterlogin/index.html";
+      window.location.href = "./afterlogin/index.html";
     })
     .catch((error) => {
       const errorCode = error.code;
