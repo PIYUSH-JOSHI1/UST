@@ -516,4 +516,111 @@ document.addEventListener('click', function(e) {
 });
 
 // Simulate periodic weather updates
+setInterval(updateWeatherInfo, 30000); // Update every 5 minutes
+
+
+
+
+
+
+// ... (previous code remains the same)
+
+function updateWeatherInfo() {
+    getLocation();
+}
+
+// Function to get user location
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+// Display map and fetch weather based on user location
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    // Show map based on the location
+    showMap(lat, lon);
+
+    // Fetch weather information based on coordinates
+    getWeatherByLocation(lat, lon);
+}
+
+// Handle errors with geolocation
+function showError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+    }
+}
+
+// Fetch weather data from OpenWeatherMap API
+function getWeatherByLocation(lat, lon) {
+    const apiKey = 'aa7a488c6767463453dcafd276e0c39b'; // Replace with your OpenWeatherMap API Key
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+    fetch(weatherUrl)
+        .then(response => response.json())
+        .then(data => {
+            displayWeather(data);
+        })
+        .catch(error => {
+            console.error("Error fetching weather data:", error);
+            alert("Error fetching weather data. Please try again.");
+        });
+}
+
+// Display fetched weather data
+function displayWeather(data) {
+    document.getElementById('mainTemperature').textContent = data.main.temp;
+    document.getElementById('mainCondition').textContent = data.weather[0].description;
+    document.getElementById('humidity').textContent = data.main.humidity;
+    document.getElementById('windSpeed').textContent = data.wind.speed;
+    
+    const iconCode = data.weather[0].icon;
+    const weatherIcon = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+    document.getElementById('mainWeatherIcon').innerHTML = `<img src="${weatherIcon}" alt="Weather Icon" />`;
+
+    const lat = data.coord.lat;
+    const lon = data.coord.lon;
+    showMap(lat, lon);
+}
+
+// Display map using an embedded iframe with the user's coordinates
+function showMap(lat, lon) {
+    const mapDiv = document.getElementById('weatherMap');
+    mapDiv.innerHTML = `
+        <iframe
+            width="100%"
+            height="300px"
+            frameborder="0" style="border:0"
+            src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"
+            allowfullscreen>
+        </iframe>`;
+}
+
+// ... (rest of the previous code remains the same)
+
+// Initialize the dashboard and fetch weather
+setActivePage('dashboard');
+updateWeatherInfo();
+
+// Simulate periodic weather updates
 setInterval(updateWeatherInfo, 300000); // Update every 5 minutes
+
+
+
