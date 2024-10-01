@@ -129,12 +129,12 @@ body {
     
     const user = userCredential.user;
       alert('Login successful');
-      window.location.href = "/afterlogin.html";
+      window.location.href = "/afterlogin/index.html";
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert("errorMessage");
+      alert(errorMessage);
     });
 });
  </script>
