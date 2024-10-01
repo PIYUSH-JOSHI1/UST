@@ -178,11 +178,13 @@ const pages = {
     map: `
         <h1>Map View</h1>
         <div class="card">
-            <div id="junctionMap" style="height: 400px; background-color: #ccc;">
-                <!-- Temporary map with junction markers -->
+            <div id="junctionMap" style="position: relative; width: 100%; height: 400px;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d945.0267555522158!2d73.77677846954332!3d18.659192869518318!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2b965ebdb974f%3A0x136afe4c7eba0341!2sFitu%20Hossain%20KGN%20Store!5e0!3m2!1sen!2sin!4v1727821424296!5m2!1sen!2sin" 
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
                 ${[1, 2, 3, 4].map(i => `
-                    <div style="position: absolute; left: ${20 + i * 20}%; top: ${20 + i * 15}%; width: 20px; height: 20px; background-color: red; border-radius: 50%;" onclick="showJunctionVideo(${i})"></div>
-                    <div id="videoFeed${i}" style="display: none; position: absolute; width: 200px; height: 150px; background-color: #000; border: 2px solid white; color: white; text-align: center; line-height: 150px;">Video Feed ${i}</div>
+                    <div style="position: absolute; left: ${20 + i * 20}%; top: ${20 + i * 15}%; width: 20px; height: 20px; background-color: red; border-radius: 50%; cursor: pointer;" onclick="showJunctionVideo(${i})"></div>
+                    <div id="videoFeed${i}" style="display: none; position: absolute; left: ${20 + i * 20}%; top: ${25 + i * 15}%; width: 200px; height: 150px; background-color: rgba(0,0,0,0.8); border: 2px solid white; color: white; text-align: center; line-height: 150px; z-index: 1000;">Video Feed ${i}</div>
                 `).join('')}
             </div>
         </div>
