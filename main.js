@@ -32,7 +32,7 @@ signInWithPopup(auth, provider)
     const token = credential.accessToken;
     const user = result.user;
     console.log(user);
-    window.location.href="afterlogin.html";
+    window.location.href="./afterlogin/index.html";
 
 
 
