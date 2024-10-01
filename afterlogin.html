@@ -5,68 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track-V Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #1a202c;
-            --text-color: #e2e8f0;
-            --sidebar-bg: #2d3748;
-            --card-bg: #4a5568;
-            --accent-color: #4299e1;
-            --success-color: #48bb78;
-            --warning-color: #ecc94b;
-            --danger-color: #f56565;
+            --primary-color: #4a90e2;
+            --secondary-color: #f5a623;
+            --background-color: #1a1a1a;
+            --card-bg-color: #2c2c2c;
+            --text-color: #ffffff;
+            --border-color: #444444;
         }
-        body {
-            font-family: 'Roboto', sans-serif;
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
         }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
         .container {
             display: flex;
             height: 100vh;
         }
+
         .sidebar {
             width: 250px;
-            background-color: var(--sidebar-bg);
+            background-color: var(--card-bg-color);
             padding: 20px;
-            display: flex;
-            flex-direction: column;
             overflow-y: auto;
         }
+
         .main-content {
-            flex-grow: 1;
+            flex: 1;
             padding: 20px;
             overflow-y: auto;
         }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
         .nav-item {
-            padding: 12px;
-            margin-bottom: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
             cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.2s;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
+
         .nav-item:hover, .nav-item.active {
-            background-color: var(--accent-color);
+            background-color: var(--primary-color);
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #3a7bc8;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
+
         .video-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
+            background-color: var(--card-bg-color);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
         }
-        .video-card:hover {
-            transform: translateY(-5px);
-        }
+
         .video-placeholder {
             background-color: #000;
             height: 200px;
@@ -74,126 +106,36 @@
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            color: var(--text-color);
         }
+
         .video-info {
             padding: 15px;
         }
-        .chart-container {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .weather-widget {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .map-container {
-            height: 400px;
-            background-color: #ccc;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-        }
-        .alert-button {
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
+
+        .progress-bar {
+            height: 10px;
+            background-color: #444;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .alert-button:hover {
-            background-color: #e53e3e;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: var(--accent-color);
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        .profile-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
-        .profile-picture {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-right: 20px;
-            object-fit: cover;
-        }
-        .profile-info {
-            flex-grow: 1;
-        }
-        .profile-info h2 {
-            margin-top: 0;
-        }
-        .inspector-entry {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 15px;
             margin-bottom: 10px;
         }
-        .logout-button {
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: auto;
-            transition: background-color 0.2s;
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
         }
-        .logout-button:hover {
-            background-color: #e53e3e;
+
+        .weather-widget {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
         }
+
         .weather-icon {
             font-size: 48px;
             margin-right: 20px;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -204,14 +146,16 @@
             height: 100%;
             background-color: rgba(0,0,0,0.5);
         }
+
         .modal-content {
-            background-color: var(--card-bg);
+            background-color: var(--card-bg-color);
             margin: 15% auto;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             width: 50%;
             max-width: 500px;
         }
+
         .close {
             color: #aaa;
             float: right;
@@ -219,35 +163,81 @@
             font-weight: bold;
             cursor: pointer;
         }
+
         .close:hover,
         .close:focus {
             color: #fff;
             text-decoration: none;
-            cursor: pointer;
         }
-        .map-marker {
-            width: 20px;
-            height: 20px;
-            background-color: red;
-            border-radius: 50%;
-            position: absolute;
-            cursor: pointer;
+
+        .inspector-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
-        .floating-video {
-            position: absolute;
-            width: 200px;
-            height: 150px;
-            background-color: #000;
-            border: 2px solid white;
-            border-radius: 8px;
-            display: none;
+
+        .inspector-card {
+            background-color: var(--card-bg-color);
+            border-radius: 10px;
+            padding: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .inspector-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .inspector-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .inspector-card p {
+            margin-bottom: 5px;
+        }
+
+        .add-inspector-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-inspector-btn:hover {
+            background-color: #e09612;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
-            <h2 style="color: var(--accent-color); margin-bottom: 20px;">Track-V</h2>
+            <div class="logo">Track-V</div>
             <div class="nav-item active" data-page="dashboard">📊 Dashboard</div>
             <div class="nav-item" data-page="reports">📈 Reports</div>
             <div class="nav-item" data-page="settings">⚙️ Settings</div>
@@ -257,17 +247,13 @@
             <div class="nav-item" data-page="inspectors">👮 Inspectors</div>
             <div class="nav-item" data-page="map">🗺️ Map View</div>
             <div class="weather-widget">
-                <h3>Current Weather</h3>
-                <div style="display: flex; align-items: center;">
-                    <div id="weatherIcon" class="weather-icon">🌤️</div>
-                    <div>
-                        <p>Temperature: <span id="temperature">--</span>°C</p>
-                        <p>Condition: <span id="condition">--</span></p>
-                    </div>
+                <div id="weatherIcon" class="weather-icon">🌤️</div>
+                <div>
+                    <p>Temperature: <span id="temperature">--</span>°C</p>
+                    <p>Condition: <span id="condition">--</span></p>
                 </div>
             </div>
-                <button class="logout-button"><a href="index.html">🚪 Logout</a></button>
-
+            <button class="button" style="width: 100%; margin-top: 20px;"> <a href="index.html"> Logout</a></button>
         </div>
         <div class="main-content" id="mainContent">
             <!-- Content will be dynamically inserted here -->
@@ -286,7 +272,7 @@
                 <input type="tel" id="inspectorPhone" name="inspectorPhone" required><br><br>
                 <label for="inspectorEmail">Email:</label>
                 <input type="email" id="inspectorEmail" name="inspectorEmail" required><br><br>
-                <button type="submit">Add Inspector</button>
+                <button type="submit" class="button">Add Inspector</button>
             </form>
         </div>
     </div>
@@ -295,16 +281,14 @@
         const mainContent = document.getElementById('mainContent');
         const navItems = document.querySelectorAll('.nav-item');
         let isDarkMode = true;
+        let isOnline = true;
 
         const pages = {
             dashboard: `
                 <h1>Traffic Dashboard</h1>
-                <div class="system-switch" style="margin-bottom: 20px;">
-                    <label class="switch">
-                        <input type="checkbox" id="systemSwitch" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <span id="systemStatus">System: Online</span>
+                <div style="margin-bottom: 20px;">
+                    <span>System Mode: <span id="systemMode">Online</span></span>
+                    <button id="modeSwitch" class="button" style="margin-left: 10px;">Switch to Manual Mode</button>
                 </div>
                 <div class="video-grid">
                     ${[1, 2, 3, 4].map(i => `
@@ -312,9 +296,19 @@
                             <div class="video-placeholder">Video Feed ${i}</div>
                             <div class="video-info">
                                 <h3>Junction ${i}</h3>
-                                <p>Traffic Density: <span id="density${i}">--</span></p>
-                                <p>Congestion Level: <span id="congestion${i}">--</span></p>
-                                <button class="alert-button" onclick="sendAlert(${i})">Send Alert</button>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 40%; background-color: #f5a623;"></div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 60%; background-color: #7ed321;"></div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 20%; background-color: #d0021b;"></div>
+                                </div>
+                                <p>Congestion: <span id="congestion${i}">40%</span></p>
+                                <p>Flow: <span id="flow${i}">60%</span></p>
+                                <p>Incidents: <span id="incidents${i}">20%</span></p>
+                                <button class="button" onclick="sendAlert(${i})">Send Alert</button>
                             </div>
                         </div>
                     `).join('')}
@@ -324,8 +318,8 @@
                 <h1>Reports</h1>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                     ${[1, 2, 3, 4].map(i => `
-                        <div class="chart-container">
-                            <h2 style="color: var(--text-color);">Junction ${i} Report</h2>
+                        <div class="card">
+                            <h2>Junction ${i} Report</h2>
                             <canvas id="predictionChart${i}"></canvas>
                             <canvas id="densityChart${i}"></canvas>
                             <canvas id="congestionChart${i}"></canvas>
@@ -335,7 +329,7 @@
             `,
             settings: `
                 <h1>Settings</h1>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Theme</h2>
                     <label class="switch">
                         <input type="checkbox" id="themeSwitch" ${isDarkMode ? 'checked' : ''}>
@@ -343,7 +337,7 @@
                     </label>
                     <span id="themeStatus">Dark Mode</span>
                 </div>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Notification Settings</h2>
                     <label>
                         <input type="checkbox" id="emailNotifications" checked>
@@ -355,7 +349,7 @@
                         SMS Notifications
                     </label>
                 </div>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Data Refresh Rate</h2>
                     <select id="refreshRate">
                         <option value="5000">5 seconds</option>
@@ -367,16 +361,29 @@
             `,
             help: `
                 <h1>Help Center</h1>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Frequently Asked Questions</h2>
                     <ul>
                         <li>How do I interpret the traffic density data?</li>
                         <li>What do the different congestion levels mean?</li>
                         <li>How can I customize my dashboard view?</li>
                         <li>What should I do if I notice a technical issue?</li>
+                        <li>How do I switch between Online and Manual modes?</li>
                     </ul>
                 </div>
-                <div class="chart-container">
+                <div class="card">
+                    <h2>Switching Between Online and Manual Modes</h2>
+                    <p>To switch between Online and Manual modes:</p>
+                    <ol>
+                        <li>Click the "Switch to Online/Manual Mode" button on the dashboard.</li>
+                        <li>A dialog box will appear asking for authentication.</li>
+                        <li>Enter your email address and provide a reason for switching modes.</li>
+                        <li>Optionally, check the box to send a report to the developer.</li>
+                        <li>Click "Confirm Switch" to complete the process.</li>
+                    </ol>
+                    <p>This process ensures that mode switches are authenticated and logged for security purposes.</p>
+                </div>
+                <div class="card">
                     <h2>Contact Support</h2>
                     <p>For assistance, please contact the IT department:</p>
                     <p>Email: it-support@police.gov.in</p>
@@ -386,9 +393,9 @@
             `,
             profile: `
                 <h1>Officer Profile</h1>
-                <div class="profile-card">
-                    <img src="https://placekitten.com/200/200" alt="Officer Rajesh Kumar" class="profile-picture">
-                    <div class="profile-info">
+                <div class="card" style="display: flex; align-items: center;">
+                    <img src="https://placekitten.com/200/200" alt="Officer Rajesh Kumar" style="width: 100px; height: 100px; border-radius: 50%; margin-right: 20px;">
+                    <div>
                         <h2>Rajesh Kumar</h2>
                         <p><strong>Badge Number:</strong> IPS-2345</p>
                         <p><strong>Rank:</strong> Sub-Inspector</p>
@@ -397,11 +404,11 @@
                         <p><strong>Specialization:</strong> Traffic Management</p>
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Performance Metrics</h2>
                     <canvas id="performanceChart"></canvas>
                 </div>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Recent Activities</h2>
                     <ul>
                         <li>Completed advanced traffic management course - 15/09/2023</li>
@@ -412,7 +419,7 @@
             `,
             weather: `
                 <h1>Weather Information</h1>
-                <div class="weather-widget" style="display: flex; align-items: center;">
+                <div class="card" style="display: flex; align-items: center;">
                     <div id="mainWeatherIcon" class="weather-icon">🌤️</div>
                     <div>
                         <h2>Current Weather</h2>
@@ -422,10 +429,11 @@
                         <p>Wind Speed: <span id="windSpeed">--</span> km/h</p>
                     </div>
                 </div>
-                <div class="map-container" id="weatherMap">
-                    <!-- Weather map will be inserted here -->
+                <div class="card">
+                    <h2>Weather Map</h2>
+                    <div id="weatherMap" style="height: 300px; background-color: #ccc;">Weather Map Placeholder</div>
                 </div>
-                <div class="chart-container">
+                <div class="card">
                     <h2>Weather Impact on Traffic</h2>
                     <p>Current weather conditions may affect traffic flow. Please adjust traffic management strategies accordingly.</p>
                     <canvas id="weatherImpactChart"></canvas>
@@ -433,25 +441,29 @@
             `,
             inspectors: `
                 <h1>Traffic Inspectors</h1>
-                ${[1, 2, 3, 4].map(i => `
-                    <div class="inspector-entry">
-                        <h2>Junction ${i}</h2>
-                        <p>Current Inspectors: <span id="currentInspectors${i}">3</span></p>
-                        <p>New Assignments: <span id="newAssignments${i}">1</span></p>
-                        <button onclick="openAddInspectorModal(${i})">Add Inspector</button>
-                        <button onclick="removeInspector(${i})">Remove Inspector</button>
-                        <div id="inspectorList${i}"></div>
-                    </div>
-                `).join('')}
+                <div class="inspector-list">
+                    ${[1, 2, 3, 4].map(i => `
+                        <div class="inspector-card">
+                            <h3>Junction ${i}</h3>
+                            <p>Current Inspectors: <span id="currentInspectors${i}">3</span></p>
+                            <p>New Assignments: <span id="newAssignments${i}">1</span></p>
+                            <button class="add-inspector-btn" onclick="openAddInspectorModal(${i})">Add Inspector</button>
+                            <button class="button" onclick="removeInspector(${i})">Remove Inspector</button>
+                            <div id="inspectorList${i}"></div>
+                        </div>
+                    `).join('')}
+                </div>
             `,
             map: `
                 <h1>Map View</h1>
-                <div class="map-container" id="junctionMap">
-                    <!-- Temporary map with junction markers -->
-                    ${[1, 2, 3, 4].map(i => `
-                        <div class="map-marker" style="left: ${20 + i * 20}%; top: ${20 + i * 15}%" onclick="showJunctionVideo(${i})"></div>
-                        <div id="videoFeed${i}" class="floating-video">Video Feed ${i}</div>
-                    `).join('')}
+                <div class="card">
+                    <div id="junctionMap" style="height: 400px; background-color: #ccc;">
+                        <!-- Temporary map with junction markers -->
+                        ${[1, 2, 3, 4].map(i => `
+                            <div style="position: absolute; left: ${20 + i * 20}%; top: ${20 + i * 15}%; width: 20px; height: 20px; background-color: red; border-radius: 50%;" onclick="showJunctionVideo(${i})"></div>
+                            <div id="videoFeed${i}" style="display: none; position: absolute; width: 200px; height: 150px; background-color: #000; border: 2px solid white; color: white; text-align: center; line-height: 150px;">Video Feed ${i}</div>
+                        `).join('')}
+                    </div>
                 </div>
             `
         };
@@ -483,20 +495,35 @@
         });
 
         function initializeDashboard() {
-            const systemSwitch = document.getElementById('systemSwitch');
-            const systemStatus = document.getElementById('systemStatus');
+            const modeSwitch = document.getElementById('modeSwitch');
+            const systemMode = document.getElementById('systemMode');
 
-            systemSwitch.addEventListener('change', function() {
-                systemStatus.textContent = this.checked ? 'System: Online' : 'System: Manual';
+            modeSwitch.addEventListener('click', () => {
+                openModeSwitch();
             });
 
             // Simulate real-time updates
             setInterval(() => {
                 for (let i = 1; i <= 4; i++) {
-                    document.getElementById(`density${i}`).textContent = Math.floor(Math.random() * 100) + '%';
-                    document.getElementById(`congestion${i}`).textContent = ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)];
+                    document.getElementById(`congestion${i}`).textContent = Math.floor(Math.random() * 100) + '%';
+                    document.getElementById(`flow${i}`).textContent = Math.floor(Math.random() * 100) + '%';
+                    document.getElementById(`incidents${i}`).textContent = Math.floor(Math.random() * 100) + '%';
                 }
             }, 5000);
+        }
+
+        function openModeSwitch() {
+            const email = prompt("Enter your email for authentication:");
+            if (email) {
+                const reason = prompt("Provide a reason for switching modes:");
+                if (reason) {
+                    const confirmReport = confirm("Do you want to send a report to the developer?");
+                    isOnline = !isOnline;
+                    document.getElementById('systemMode').textContent = isOnline ? 'Online' : 'Manual';
+                    document.getElementById('modeSwitch').textContent = `Switch to ${isOnline ? 'Manual' : 'Online'} Mode`;
+                    alert(`Mode switched to ${isOnline ? 'Online' : 'Manual'}. ${confirmReport ? 'A report has been sent to the developer.' : ''}`);
+                }
+            }
         }
 
         function initializeReports() {
@@ -525,28 +552,9 @@
                 },
                 options: {
                     responsive: true,
-                    title: {
-                        display: true,
-                        text: `Prediction vs Actual Count - Junction ${feedId}`
-                    },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: 'white'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: 'white'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
+                            beginAtZero: true
                         }
                     }
                 }
@@ -568,28 +576,9 @@
                 },
                 options: {
                     responsive: true,
-                    title: {
-                        display: true,
-                        text: `Traffic Density Over Time - Junction ${feedId}`
-                    },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: 'white'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: 'white'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
+                            beginAtZero: true
                         }
                     }
                 }
@@ -610,28 +599,9 @@
                 },
                 options: {
                     responsive: true,
-                    title: {
-                        display: true,
-                        text: `Weekly Congestion Levels - Junction ${feedId}`
-                    },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: 'white'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: 'white'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
+                            beginAtZero: true
                         }
                     }
                 }
@@ -678,14 +648,6 @@
                     mainWeatherIcon.textContent = '⛈️';
                     break;
             }
-
-            // Simulate weather map (replace with actual map integration in production)
-            document.getElementById('weatherMap').innerHTML = `
-                <div style="background-color: #87CEEB; color: black; padding: 20px; text-align: center;">
-                    Weather Map Placeholder<br>
-                    Current condition: ${condition}
-                </div>
-            `;
         }
 
         function createWeatherImpactChart() {
@@ -703,28 +665,9 @@
                 },
                 options: {
                     responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Weather Impact on Traffic Flow'
-                    },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: 'white'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: 'white'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
+                            beginAtZero: true
                         }
                     }
                 }
@@ -747,21 +690,10 @@
                 },
                 options: {
                     responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Officer Performance Metrics'
-                    },
                     scale: {
                         ticks: {
                             beginAtZero: true,
                             max: 100
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
                         }
                     }
                 }
@@ -770,10 +702,9 @@
 
         function toggleTheme() {
             isDarkMode = !isDarkMode;
-            document.body.style.setProperty('--bg-color', isDarkMode ? '#1a202c' : '#ffffff');
-            document.body.style.setProperty('--text-color', isDarkMode ? '#e2e8f0' : '#2d3748');
-            document.body.style.setProperty('--sidebar-bg', isDarkMode ? '#2d3748' : '#f7fafc');
-            document.body.style.setProperty('--card-bg', isDarkMode ? '#4a5568' : '#edf2f7');
+            document.body.style.setProperty('--background-color', isDarkMode ? '#1a1a1a' : '#ffffff');
+            document.body.style.setProperty('--text-color', isDarkMode ? '#ffffff' : '#000000');
+            document.body.style.setProperty('--card-bg-color', isDarkMode ? '#2c2c2c' : '#f0f0f0');
             document.getElementById('themeStatus').textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
         }
 
