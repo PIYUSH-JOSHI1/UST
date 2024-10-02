@@ -19,7 +19,13 @@
             <div class="nav-item" data-page="weather">🌤️ Weather</div>
             <div class="nav-item" data-page="inspectors">👮 Inspectors</div>
             <div class="nav-item" data-page="map">🗺️ Map View</div>
-            
+            <div class="weather-widget">
+                <div id="weatherIcon" class="weather-icon">🌤️</div>
+                <div>
+                    <p>Temperature: <span id="temperature">--</span>°C</p>
+                    <p>Condition: <span id="condition">--</span></p>
+                </div>
+            </div>
             <button class="button" style="width: 100%; margin-top: 20px;"> <a href="index.html"> Logout</a></button>
         </div>
         <div class="main-content" id="mainContent">
@@ -45,5 +51,12 @@
     </div>
 
     <script src="script.js"></script>
+
+
+    <script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+<script src="https://mediafiles.botpress.cloud/19195709-f157-43c6-a6fe-606890c37897/webchat/v2.1/config.js"></script>
+
+
+
 </body>
 </html>
