@@ -26,10 +26,16 @@ body {
 }
 
 .sidebar {
-    width: 250px;
-    background-color: var(--card-bg-color);
-    padding: 20px;
+    width: 250px; /* Sidebar default width */
+    background-color: #2c2c2c; /* Background color of the sidebar */
+    padding: 20px; /* Padding inside the sidebar */
+    position: relative;
+    transition: width 0.3s ease; /* Smooth transition for opening/closing */
     overflow-y: auto;
+}
+.sidebar.closed {
+   width: 0; /* Completely collapse the sidebar */
+    padding: 0;
 }
 
 .main-content {
@@ -39,10 +45,11 @@ body {
 }
 
 .logo {
-    font-size: 24px;
+    font-size: 24px; /* Size of the logo */
     font-weight: bold;
-    color: var(--primary-color);
+    color: #4a90e2; /* Color of the logo text */
     margin-bottom: 30px;
+    margin-top: 60px;
 }
 
 .nav-item {
@@ -50,13 +57,30 @@ body {
     margin-bottom: 10px;
     cursor: pointer;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s; /* Smooth hover effect */
+    color: #ffffff;
 }
 
 .nav-item:hover, .nav-item.active {
-    background-color: var(--primary-color);
+    background-color: #4a90e2; /* Highlight color when hovered or active */
 }
-
+.main-content {
+    transition: margin-left 0.3s ease; /* Smooth transition for shifting content */
+}
+.sidebar.closed + .main-content {
+    margin-left:60px; /* Main content margin when sidebar is collapsed */
+}
+.toggle-btn {
+    position: absolute; /* Position the toggle button */
+    top: 20px;
+    left: 20px;
+    background-color: #4a90e2; /* Background color of the button */
+    color: #ffffff; /* Text color */
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 100; /* Keep the button above other elements */
+}
 .button {
     display: inline-block;
     padding: 10px 20px;
@@ -214,6 +238,7 @@ body {
 
     .main-content {
         padding: 10px;
+         
     }
 
     .video-grid {
