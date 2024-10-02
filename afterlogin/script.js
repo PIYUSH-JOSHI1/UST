@@ -233,19 +233,63 @@ function initializeDashboard() {
     }, 5000);
 }
 
+// ... (previous code remains the same)
+
 function openModeSwitch() {
     const email = prompt("Enter your email for authentication:");
     if (email) {
-        const reason = prompt("Provide a reason for switching modes:");
-        if (reason) {
-            const confirmReport = confirm("Do you want to send a report to the developer?");
-            isOnline = !isOnline;
-            document.getElementById('systemMode').textContent = isOnline ? 'Online' : 'Manual';
-            document.getElementById('modeSwitch').textContent = `Switch to ${isOnline ? 'Manual' : 'Online'} Mode`;
-            alert(`Mode switched to ${isOnline ? 'Online' : 'Manual'}. ${confirmReport ? 'A report has been sent to the developer.' : ''}`);
+        if (isValidEmail(email)) {
+            const reason = prompt("Provide a reason for switching modes:");
+            if (reason) {
+                const confirmReport = confirm("Do you want to send a report to the developer?");
+                isOnline = !isOnline;
+                document.getElementById('systemMode').textContent = isOnline ? 'Online' : 'Manual';
+                document.getElementById('modeSwitch').textContent = `Switch to ${isOnline ? 'Manual' : 'Online'} Mode`;
+                
+                if (confirmReport) {
+                    sendReportToDeveloper(email, reason, isOnline);
+                }
+                
+                alert(`Mode switched to ${isOnline ? 'Online' : 'Manual'}. ${confirmReport ? 'A report has been sent to the developer.' : ''}`);
+            }
+        } else {
+            alert("Invalid email. Authentication failed.");
         }
     }
 }
+
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function sendReportToDeveloper(userEmail, reason, newMode) {
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/20237355/2mh16m0/';
+  
+    fetch(zapierWebhookUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        userEmail,
+        reason,
+        newMode,
+        timestamp: new Date().toISOString()
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Report sent successfully');
+        alert('Report sent to developer at rajtilakjoshij@gmail.com');
+      } else {
+        throw new Error('Failed to send report');
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Failed to send report. Please try again.');
+    });
+  }
+
+// ... (rest of the code remains the same)
 
 function initializeReports() {
     for (let i = 1; i <= 4; i++) {
