@@ -81,37 +81,74 @@ const pages = {
         </div>
     `,
     help: `
-        <h1>Help Center</h1>
-        <div class="card">
-            <h2>Frequently Asked Questions</h2>
-            <ul>
-                <li>How do I interpret the traffic density data?</li>
-                <li>What do the different congestion levels mean?</li>
-                <li>How can I customize my dashboard view?</li>
-                <li>What should I do if I notice a technical issue?</li>
-                <li>How do I switch between Online and Manual modes?</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h2>Switching Between Online and Manual Modes</h2>
-            <p>To switch between Online and Manual modes:</p>
-            <ol>
-                <li>Click the "Switch to Online/Manual Mode" button on the dashboard.</li>
-                <li>A dialog box will appear asking for authentication.</li>
-                <li>Enter your email address and provide a reason for switching modes.</li>
-                <li>Optionally, check the box to send a report to the developer.</li>
-                <li>Click "Confirm Switch" to complete the process.</li>
-            </ol>
-            <p>This process ensures that mode switches are authenticated and logged for security purposes.</p>
-        </div>
-        <div class="card">
-            <h2>Contact Support</h2>
-            <p>For assistance, please contact the IT department:</p>
-            <p>Email: it-support@police.gov.in</p>
-            <p>Phone: 1800-123-4567</p>
-            <p>Available 24/7</p>
-        </div>
-    `,
+    <h1>Help Center</h1>
+    <div class="card">
+        <h2>Frequently Asked Questions</h2>
+        <ul class="faq-list">
+            <li class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How do I interpret the traffic density data? <span class="arrow">↓</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    Traffic density data provides an estimate of the number of vehicles within a monitored area.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What do the different congestion levels mean? <span class="arrow">↓</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    Congestion levels are categorized based on traffic density: Low, Moderate, High, and Severe.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How can I customize my dashboard view? <span class="arrow">↓</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    You can customize your dashboard by adjusting the displayed widgets and data metrics.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What should I do if I notice a technical issue? <span class="arrow">↓</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    If you notice a technical issue, click the "Report Issue" button in the dashboard.
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How do I switch between Online and Manual modes? <span class="arrow">↓</span>
+                </div>
+                <div class="faq-answer" style="display: none;">
+                    To switch modes, click the "Switch to Online/Manual Mode" button, authenticate with your email, and confirm the switch.
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Switching Between Online and Manual Modes</h2>
+        <p>To switch between Online and Manual modes:</p>
+        <ol>
+            <li>Click the "Switch to Online/Manual Mode" button on the dashboard.</li>
+            <li>A dialog box will appear asking for authentication.</li>
+            <li>Enter your email address and provide a reason for switching modes.</li>
+            <li>Optionally, check the box to send a report to the developer.</li>
+            <li>Click "Confirm Switch" to complete the process.</li>
+        </ol>
+        <p>This process ensures that mode switches are authenticated and logged for security purposes.</p>
+    </div>
+
+    <div class="card">
+        <h2>Contact Support</h2>
+        <p>For assistance, please contact the IT department:</p>
+        <p>Email: it-support@police.gov.in</p>
+        <p>Phone: 1800-123-4567</p>
+        <p>Available 24/7</p>
+    </div>
+`,
     profile: `
         <h1>Officer Profile</h1>
         <div class="card" style="display: flex; align-items: center;">
@@ -188,6 +225,23 @@ const pages = {
         </div>
     `
 };
+
+// Function to toggle FAQ answers
+function toggleFAQ(element) {
+    const answer = element.nextElementSibling;
+    const arrow = element.querySelector('.arrow');
+
+    // Toggle answer visibility
+    if (answer.style.display === 'none' || answer.style.display === '') {
+        answer.style.display = 'block';
+        arrow.classList.remove('fa-chevron-down');
+        arrow.classList.add('fa-chevron-up'); // Change arrow to up
+    } else {
+        answer.style.display = 'none';
+        arrow.classList.remove('fa-chevron-up');
+        arrow.classList.add('fa-chevron-down'); // Change arrow to down
+    }
+}
 
 function setActivePage(pageId) {
     navItems.forEach(item => item.classList.remove('active'));
@@ -298,7 +352,6 @@ function initializeReports() {
         createCongestionChart(i);
     }
 }
-
 function createPredictionChart(feedId) {
     const ctx = document.getElementById(`predictionChart${feedId}`).getContext('2d');
     new Chart(ctx, {
