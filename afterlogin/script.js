@@ -226,6 +226,59 @@ const pages = {
     `
 };
 
+
+
+
+
+
+
+
+
+
+// Get DOM elements
+const sidebar = document.getElementById('sidebar');
+
+const toggleBtn = document.getElementById('toggleBtn');
+
+// Function to toggle sidebar
+function toggleSidebar() {
+    sidebar.classList.toggle('closed');
+    sidebar.classList.toggle('open');
+    mainContent.classList.toggle('full-width');
+}
+
+// Event listener for toggle button
+toggleBtn.addEventListener('click', toggleSidebar);
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+    const isMobile = window.innerWidth <= 768;
+    const clickedOutsideSidebar = !sidebar.contains(e.target) && e.target !== toggleBtn;
+    
+    if (isMobile && clickedOutsideSidebar && !sidebar.classList.contains('closed')) {
+        toggleSidebar();
+    }
+});
+
+// Adjust layout on window resize
+window.addEventListener('resize', () => {
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile && sidebar.classList.contains('closed')) {
+        sidebar.classList.remove('closed');
+        mainContent.classList.remove('full-width');
+    } else if (isMobile && !sidebar.classList.contains('closed')) {
+        sidebar.classList.add('closed');
+        mainContent.classList.add('full-width');
+    }
+});
+
+// Run initial layout adjustment
+window.dispatchEvent(new Event('resize'));
+
+// ... (rest of your existing JavaScript code)
+
+
+
 // Function to toggle FAQ answers
 function toggleFAQ(element) {
     const answer = element.nextElementSibling;
@@ -709,15 +762,4 @@ function showMap(lat, lon) {
             allowfullscreen>
         </iframe>`;
 }
-
-// ... (rest of the previous code remains the same)
-
-// Initialize the dashboard and fetch weather
-setActivePage('dashboard');
-updateWeatherInfo();
-
-// Simulate periodic weather updates
-setInterval(updateWeatherInfo, 300000); // Update every 5 minutes
-
-
 
