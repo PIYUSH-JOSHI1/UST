@@ -70,5 +70,18 @@
 
     <script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
     <script src="https://mediafiles.botpress.cloud/19195709-f157-43c6-a6fe-606890c37897/webchat/v2.1/config.js"></script>
+    <script>
+      function toggleFAQ(element) {
+          const answer = element.nextElementSibling;
+          const arrow = element.querySelector('.arrow');
+          if (answer.style.display === 'none' || answer.style.display === '') {
+              answer.style.display = 'block';
+              arrow.innerHTML = '↑';
+          } else {
+              answer.style.display = 'none';
+              arrow.innerHTML = '↓';
+          }
+      }
+      </script>
   </body>
 </html>
