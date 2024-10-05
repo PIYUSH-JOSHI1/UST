@@ -289,16 +289,26 @@ window.dispatchEvent(new Event('resize'));
 function toggleFAQ(element) {
     const answer = element.nextElementSibling;
     const arrow = element.querySelector('.arrow');
+    const allFAQs = document.querySelectorAll('.faq-item');
 
-    // Toggle answer visibility
-    if (answer.style.display === 'none' || answer.style.display === '') {
-        answer.style.display = 'block';
-        arrow.classList.remove('fa-chevron-down');
-        arrow.classList.add('fa-chevron-up'); // Change arrow to up
+    // Close all other FAQs
+    allFAQs.forEach(faq => {
+        const faqAnswer = faq.querySelector('.faq-answer');
+        const faqArrow = faq.querySelector('.arrow');
+
+        if (faq !== element.parentElement) {
+            faqAnswer.classList.remove('active'); // Hide other answers
+            faqArrow.textContent = '↓'; // Reset arrow to down
+        }
+    });
+
+    // Toggle current FAQ
+    if (answer.classList.contains('active')) {
+        answer.classList.remove('active'); // Hide the answer
+        arrow.textContent = '↓'; // Set arrow down
     } else {
-        answer.style.display = 'none';
-        arrow.classList.remove('fa-chevron-up');
-        arrow.classList.add('fa-chevron-down'); // Change arrow to down
+        answer.classList.add('active'); // Show the answer
+        arrow.textContent = '↑'; // Set arrow up
     }
 }
 
