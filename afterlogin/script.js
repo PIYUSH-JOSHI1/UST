@@ -80,7 +80,7 @@ const pages = {
             </select>
         </div>
     `,
-    help: `
+     help : `
     <h1>Help Center</h1>
     <div class="card">
         <h2>Frequently Asked Questions</h2>
@@ -90,7 +90,7 @@ const pages = {
                     How do I interpret the traffic density data? <span class="arrow">↓</span>
                 </div>
                 <div class="faq-answer" style="display: none;">
-                    Traffic density data provides an estimate of the number of vehicles within a monitored area.
+                    Traffic density refers to the number of vehicles on a road section within a particular time. Higher density usually implies slower traffic flow, while lower density means smoother movement. The data helps optimize traffic management decisions.
                 </div>
             </li>
             <li class="faq-item">
@@ -98,7 +98,13 @@ const pages = {
                     What do the different congestion levels mean? <span class="arrow">↓</span>
                 </div>
                 <div class="faq-answer" style="display: none;">
-                    Congestion levels are categorized based on traffic density: Low, Moderate, High, and Severe.
+                    Congestion levels are based on traffic data and are categorized as follows:
+                    <ul>
+                        <li><strong>Low:</strong> Free-flowing traffic.</li>
+                        <li><strong>Moderate:</strong> Some slowdowns but manageable.</li>
+                        <li><strong>High:</strong> Significant delays, possible backups.</li>
+                        <li><strong>Severe:</strong> Traffic jams or gridlock.</li>
+                    </ul>
                 </div>
             </li>
             <li class="faq-item">
@@ -106,7 +112,7 @@ const pages = {
                     How can I customize my dashboard view? <span class="arrow">↓</span>
                 </div>
                 <div class="faq-answer" style="display: none;">
-                    You can customize your dashboard by adjusting the displayed widgets and data metrics.
+                    You can customize the dashboard by selecting the widgets and data metrics you want to prioritize. Simply navigate to the settings and use the drag-and-drop feature to rearrange the layout as per your needs.
                 </div>
             </li>
             <li class="faq-item">
@@ -114,7 +120,7 @@ const pages = {
                     What should I do if I notice a technical issue? <span class="arrow">↓</span>
                 </div>
                 <div class="faq-answer" style="display: none;">
-                    If you notice a technical issue, click the "Report Issue" button in the dashboard.
+                    In case of technical issues, click the "Report Issue" button located in the dashboard. You will be prompted to describe the problem. Our technical team will review the report and get back to you.
                 </div>
             </li>
             <li class="faq-item">
@@ -122,12 +128,12 @@ const pages = {
                     How do I switch between Online and Manual modes? <span class="arrow">↓</span>
                 </div>
                 <div class="faq-answer" style="display: none;">
-                    To switch modes, click the "Switch to Online/Manual Mode" button, authenticate with your email, and confirm the switch.
+                    Switching between Online and Manual modes is simple. Click on "Switch to Online/Manual Mode," verify your email, provide a reason, and confirm the switch. This ensures secure transitions between modes.
                 </div>
             </li>
         </ul>
     </div>
-    
+
     <div class="card">
         <h2>Switching Between Online and Manual Modes</h2>
         <p>To switch between Online and Manual modes:</p>
