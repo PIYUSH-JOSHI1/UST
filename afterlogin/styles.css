@@ -231,71 +231,228 @@ body {
     background-color: #e09612;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .video-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
+/* Mode Switch Modal Styles CODE IS UPDATED BY OMKAR FROM HERE DATE:5th June 2024 20:34pm */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
 }
 
+.modal-content {
+    background-color: var(--card-bg-color);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    color: var(--text-color);
+}
+
+.close {
+    color: var(--text-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+#modeSwitchForm {
+    display: flex;
+    flex-direction: column;
+}
+
+#modeSwitchForm label {
+    margin-top: 15px;
+    color: var(--text-color);
+}
+
+#modeSwitchForm input,
+#modeSwitchForm textarea {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-color);
+}
+
+#modeSwitchForm button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#modeSwitchForm button:hover {
+    background-color: #3a7bc8;
+}
+/* FAQ Styles */
+.faq-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.faq-item {
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.faq-question .arrow {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* FAQ Answer - Initially hidden */
+.faq-answer {
+    display: none; /* Hidden by default */
+    padding: 15px;
+    background-color: var(--background-color);
+    transition: display 0.3s ease; /* For smoothness */
+}
+
+/* FAQ Answer - When active (visible) */
+.faq-answer.active {
+    display: block; /* Visible when active */
+}
+/* FAQ Styles */
+.faq-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.faq-item {
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.faq-question .arrow {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.faq-answer {
+    display: none;
+    padding: 15px;
+    background-color: var(--background-color);
+}
+
+/* Styles for other sections */
+.card h2 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.card p, .card ol, .card ul {
+    margin-bottom: 10px;
+}
+
+.card ol, .card ul {
+    padding-left: 20px;
+}
+
+.contact-info {
+    background-color: var(--card-bg-color);
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.contact-info p {
+    margin-bottom: 5px;
+}
+
+/* Responsive FAQ Styles */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translateY(-100%);
-        transition: transform 0.3s ease;
+    .faq-question {
+        font-size: 16px;
+        padding: 12px;
     }
 
-    .sidebar.closed {
-        transform: translateY(-100%);
-    }
-
-    .sidebar.open {
-        transform: translateY(0);
-    }
-
-    .main-content {
-        margin-left: 0;
-        padding-top: 60px;
-    }
-
-    .toggle-btn {
-        top: 10px;
-        left: 10px;
-    }
-
-    .video-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .weather-widget {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .weather-icon {
-        margin-bottom: 10px;
-    }
-
-    .inspector-list {
-        grid-template-columns: 1fr;
+    .faq-answer {
+        font-size: 14px;
     }
 }
 
 @media (max-width: 480px) {
-    .card {
-        padding: 15px;
+    .faq-question {
+        font-size: 14px;
+        padding: 10px;
     }
 
-    .video-placeholder {
-        height: 150px;
+    .faq-answer {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+    }
+
+    .main-content {
+        padding: 10px;
+         
+    }
+
+    .video-grid {
+        grid-template-columns: 1fr;
     }
 
     .modal-content {
-        width: 95%;
-        padding: 15px;
+        width: 90%;
     }
 }
