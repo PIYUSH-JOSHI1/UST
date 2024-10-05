@@ -80,7 +80,7 @@ const pages = {
             </select>
         </div>
     `,
-     help : `
+    help: `
     <h1>Help Center</h1>
     <div class="card">
         <h2>Frequently Asked Questions</h2>
@@ -136,23 +136,39 @@ const pages = {
 
     <div class="card">
         <h2>Switching Between Online and Manual Modes</h2>
-        <p>To switch between Online and Manual modes:</p>
-        <ol>
-            <li>Click the "Switch to Online/Manual Mode" button on the dashboard.</li>
-            <li>A dialog box will appear asking for authentication.</li>
-            <li>Enter your email address and provide a reason for switching modes.</li>
-            <li>Optionally, check the box to send a report to the developer.</li>
-            <li>Click "Confirm Switch" to complete the process.</li>
-        </ol>
-        <p>This process ensures that mode switches are authenticated and logged for security purposes.</p>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                How to switch between modes <span class="arrow">↓</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                <p>To switch between Online and Manual modes:</p>
+                <ol>
+                    <li>Click the "Switch to Online/Manual Mode" button on the dashboard.</li>
+                    <li>A dialog box will appear asking for authentication.</li>
+                    <li>Enter your email address and provide a reason for switching modes.</li>
+                    <li>Optionally, check the box to send a report to the developer.</li>
+                    <li>Click "Confirm Switch" to complete the process.</li>
+                </ol>
+                <p>This process ensures that mode switches are authenticated and logged for security purposes.</p>
+            </div>
+        </div>
     </div>
 
     <div class="card">
         <h2>Contact Support</h2>
-        <p>For assistance, please contact the IT department:</p>
-        <p>Email: it-support@police.gov.in</p>
-        <p>Phone: 1800-123-4567</p>
-        <p>Available 24/7</p>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                How to reach support <span class="arrow">↓</span>
+            </div>
+            <div class="faq-answer" style="display: none;">
+                <div class="contact-info">
+                    <p>For assistance, please contact the IT department:</p>
+                    <p>Email: it-support@police.gov.in</p>
+                    <p>Phone: 1800-123-4567</p>
+                    <p>Available 24/7</p>
+                </div>
+            </div>
+        </div>
     </div>
 `,
     profile: `
