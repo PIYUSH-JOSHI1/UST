@@ -7,33 +7,148 @@ let isOnline = true;
 const pages = {
     dashboard: `
         <h1>Traffic Dashboard</h1>
-        <div style="margin-bottom: 20px;">
-            <span>System Mode: <span id="systemMode">Online</span></span>
-            <button id="modeSwitch" class="button" style="margin-left: 10px;">Switch to Manual Mode</button>
-        </div>
-        <div class="video-grid">
-            ${[1, 2, 3, 4].map(i => `
-                <div class="video-card">
-                    <div class="video-placeholder">Video Feed ${i}</div>
-                    <div class="video-info">
-                        <h3>Junction ${i}</h3>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: 40%; background-color: #f5a623;"></div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: 60%; background-color: #7ed321;"></div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: 20%; background-color: #d0021b;"></div>
-                        </div>
-                        <p>Congestion: <span id="congestion${i}">40%</span></p>
-                        <p>Flow: <span id="flow${i}">60%</span></p>
-                        <p>Incidents: <span id="incidents${i}">20%</span></p>
-                        <button class="button" onclick="sendAlert(${i})">Send Alert</button>
-                    </div>
+<div style="margin-bottom: 20px;">
+    <span>System Mode: <span id="systemMode">Online</span></span>
+    <button id="modeSwitch" class="button" style="margin-left: 10px;">Switch to Manual Mode</button>
+</div>
+
+<div class="video-grid">
+    <!-- Loop for 4 Junctions -->
+    ${[1, 2, 3, 4].map(i => `
+        <div class="video-card"> 
+            <div class="video-container">
+                <!-- Video for each junction with a unique source -->
+                <video id="video${i}" src="/UST-main/video/${i === 1 ? 'a.mp4' : i === 2 ? 'b.mp4' : i === 3 ? 'c.mp4' : 'd.mp4'}" width="300px" autoplay muted></video>
+
+                <!-- Go Live Button (Visible on Hover) -->
+                <button class="go-live-btn" onclick="goLive('video${i}')">Go Live</button>
+            </div>
+            
+            <div class="video-info">
+                <h3>Junction ${i}</h3>
+                
+                <!-- Progress Bars -->
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 40%; background-color: #f5a623;"></div>
                 </div>
-            `).join('')}
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 60%; background-color: #7ed321;"></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 20%; background-color: #d0021b;"></div>
+                </div>
+                
+                <!-- Traffic Stats -->
+                <p>Congestion: <span id="congestion${i}">40%</span></p>
+                <p>Flow: <span id="flow${i}">60%</span></p>
+                <p>Incidents: <span id="incidents${i}">20%</span></p>
+                
+                <!-- Send Alert Button -->
+                <button class="button" onclick="sendAlert(${i})">Send Alert</button>
+            </div>
         </div>
+    `).join('')}
+</div>
+
+<script>
+    function goLive(videoId) {
+        const video = document.getElementById(videoId);
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.mozRequestFullScreen) { // Firefox
+            video.mozRequestFullScreen();
+        } else if (video.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+            video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { // IE/Edge
+            video.msRequestFullscreen();
+        }
+    }
+</script>
+
+<style>
+    /* General styling for video grid */
+    .video-grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* Styling for each video card with black background */
+    .video-card {
+        width: 300px;
+        position: relative;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background: #000; /* Set to black */
+        border-radius: 5px;
+        color: white; /* Text color to white for better contrast */
+    }
+
+    .video-container {
+        position: relative;
+    }
+
+    /* Video styling with hover zoom effect */
+    video {
+        transition: transform 0.3s ease;
+        border-radius: 5px;
+    }
+
+    .video-container:hover video {
+        transform: scale(1.1); /* Slightly zoom in the video */
+    }
+
+    /* Hidden 'Go Live' button by default */
+    .go-live-btn {
+        display: none;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Show 'Go Live' button on hover */
+    .video-container:hover .go-live-btn {
+        display: block;
+    }
+
+    /* Progress bar styling */
+    .progress-bar {
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        margin: 5px 0;
+        height: 8px;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    /* Styling for the 'Send Alert' button */
+    .button {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .button:hover {
+        background-color: #e60000;
+    }
+</style>
+
+
     `,
     reports: `
         <h1>Reports</h1>
