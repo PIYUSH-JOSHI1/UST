@@ -18,7 +18,7 @@ const pages = {
         <div class="video-card"> 
             <div class="video-container">
                 <!-- Video for each junction with a unique source -->
-                <video id="video${i}" src="video/${i === 1 ? 'a.mp4' : i === 2 ? 'b.mp4' : i === 3 ? 'c.mp4' : 'd.mp4'}" width="300px" autoplay muted></video>
+                <video id="video${i}" src="/video/${i === 1 ? 'a.mp4' : i === 2 ? 'b.mp4' : i === 3 ? 'c.mp4' : i==4 : 'vehical.mp4'}" width="300px" autoplay muted></video>
 
                 <!-- Go Live Button (Visible on Hover) -->
                 <button class="go-live-btn" onclick="goLive('video${i}')">Go Live</button>
