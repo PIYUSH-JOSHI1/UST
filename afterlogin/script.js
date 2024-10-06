@@ -4,13 +4,6 @@ const navItems = document.querySelectorAll('.nav-item');
 let isDarkMode = true;
 let isOnline = true;
 
-const pages = {
-    dashboard: `
-    
-const mainContent = document.getElementById('mainContent');
-const navItems = document.querySelectorAll('.nav-item');
-let isDarkMode = true;
-let isOnline = true;
 
 const pages = {
     dashboard: `
